@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>RevitMCP</Name>
+    <Assembly>D:\MCP\REVIT\RevitMCP.Plugin\bin\Debug\net8.0-windows\RevitMCP.Plugin.dll</Assembly>
+    <ClientId>B2851897-9095-46F2-8A7B-01587635839C</ClientId>
+    <FullClassName>RevitMCP.Plugin.App</FullClassName>
+    <VendorId>ADSK</VendorId>
+    <VendorDescription>Revit MCP Server</VendorDescription>
+  </AddIn>
+</RevitAddIns>

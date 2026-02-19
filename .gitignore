@@ -1,0 +1,35 @@
+# Visual Studio / C#
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.pdb
+
+# Node.js
+node_modules/
+dist/
+npm-debug.log
+yarn-error.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Revit
+*.rte
+*.rvt
+*.rfa
+*.00*.rvt
+*.backup
+
+# OS
+Thumbs.db
+.DS_Store
+
+# MCP Logs
+*.log
