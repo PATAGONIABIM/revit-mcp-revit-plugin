@@ -20,9 +20,9 @@ It consists of two main components:
 ### Installation
 
 #### 1. Revit Plugin (C#)
-*   Open the solution `RevitMCP.sln` in Visual Studio.
+*   Open `RevitMCP.Plugin/RevitMCP.Plugin.csproj` in Visual Studio (or build using `dotnet build RevitMCP.Plugin`).
 *   Restore NuGet packages (Revit API references).
-*   Build the solution.
+*   Build the project.
 *   Copy the output `.dll` and `.addin` file to your Revit Addins folder (usually `%AppData%\Autodesk\Revit\Addins\2026`).
 *   Start Revit 2026. You should see a notification that the server has started on port **2026**.
 
@@ -62,9 +62,9 @@ Consta de dos componentes principales:
 ### Instalación
 
 #### 1. Plugin de Revit (C#)
-*   Abre la solución `RevitMCP.sln` en Visual Studio.
+*   Abre `RevitMCP.Plugin/RevitMCP.Plugin.csproj` en Visual Studio (o compila ejecutando `dotnet build RevitMCP.Plugin`).
 *   Restaura los paquetes NuGet (referencias a la API de Revit).
-*   Compila la solución.
+*   Compila el proyecto.
 *   Copia el archivo `.dll` de salida y el archivo `.addin` a tu carpeta de Addins de Revit (usualmente `%AppData%\Autodesk\Revit\Addins\2026`).
 *   Inicia Revit 2026. Deberías ver una notificación de que el servidor ha iniciado en el puerto **2026**.
 
