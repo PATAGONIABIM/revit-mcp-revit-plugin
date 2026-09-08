@@ -5,6 +5,7 @@ import {
     ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
 import * as net from "net";
 
 const server = new Server(
@@ -61,7 +62,7 @@ async function sendToRevit(command: string, args: any): Promise<any> {
 }
 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
-    return {
+    const rawResponse = {
         tools: [
             {
                 name: "get_levels",
@@ -486,7 +487,145 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                     height: z.number().optional().describe("Height of the columns in meters (default 3.0)"),
                 }),
             },
+            {
+                name: "dynamo_list_scripts",
+                description:
+                    "Search and list Dynamo graphs (.dyn) in a specified directory or default system locations (Dynamo Revit, Dynamo Player samples, project directories).",
+                inputSchema: z.object({
+                    directory_path: z.string().optional().describe("Directory path to search for .dyn files. If omitted, searches standard Dynamo Revit and workspace folders."),
+                }),
+            },
+            {
+                name: "dynamo_get_script_info",
+                description:
+                    "Inspect and parse a Dynamo graph (.dyn) JSON file, extracting configurable inputs (IsSetAsInput), outputs (IsSetAsOutput), embedded Python nodes with their code, and package dependencies.",
+                inputSchema: z.object({
+                    script_path: z.string().describe("Full path to the .dyn file to inspect"),
+                }),
+            },
+            {
+                name: "dynamo_modify_inputs",
+                description:
+                    "Modify input parameter values inside a Dynamo graph (.dyn) without opening Dynamo GUI.",
+                inputSchema: z.object({
+                    script_path: z.string().describe("Full path to the .dyn file to modify"),
+                    inputs: z.record(z.any()).describe("Key-value mapping of node names or node IDs to their new values"),
+                    output_path: z.string().optional().describe("Optional path to save the modified .dyn file. If omitted, updates the file in-place."),
+                }),
+            },
+            {
+                name: "dynamo_run_script",
+                description:
+                    "Execute a Dynamo graph (.dyn) on the active Revit project with optional input parameter overrides.",
+                inputSchema: z.object({
+                    script_path: z.string().describe("Full path to the .dyn file to run"),
+                    inputs: z.record(z.any()).optional().describe("Optional input parameter overrides to apply before running"),
+                }),
+            },
+            {
+                name: "dynamo_generate_graph",
+                description:
+                    "Generate a complete, valid Dynamo graph (.dyn) JSON file with automatic visual node layout, supporting input nodes, Revit element wiring, and embedded CPython3 Revit API code.",
+                inputSchema: z.object({
+                    name: z.string().describe("Name of the graph"),
+                    output_path: z.string().optional().describe("Target file path for the .dyn file (defaults to D:\\MCP\\REVIT\\scripts\\<name>.dyn)"),
+                    description: z.string().optional().describe("Description of the graph's purpose"),
+                    python_code: z.string().optional().describe("Python code (CPython 3 / Python.NET) to place in the main script node, utilizing RevitServices and Autodesk.Revit.DB"),
+                    inputs: z.array(z.object({
+                        name: z.string().describe("Input node display name"),
+                        type: z.enum(["string", "number", "int", "boolean"]).describe("Data type"),
+                        default_value: z.any().describe("Default value for this input"),
+                    })).optional().describe("List of configurable input nodes to create and wire into the Python script"),
+                }),
+            },
+            {
+                name: "dynamo_run_python",
+                description:
+                    "Execute a custom Python script (CPython 3) dynamically within Revit using Dynamo's execution context, with full access to RevitServices.Persistence.DocumentManager, active document, and Autodesk.Revit.DB.",
+                inputSchema: z.object({
+                    code: z.string().describe("Python code snippet to execute in Revit context"),
+                    inputs: z.record(z.any()).optional().describe("Optional dictionary of inputs passed to the script as IN[0], IN[1], etc."),
+                }),
+            },
+            {
+                name: "get_project_info",
+                description:
+                    "Get BIM project information and metadata (Project Name, Number, Client/Mandante, Architect/Author, Issue Date, Status, Address, Building Name, Organization, and custom parameters).",
+                inputSchema: z.object({}),
+            },
+            {
+                name: "set_project_info",
+                description:
+                    "Update project information and metadata in Revit (Project Name, Number, Client/Mandante, Architect/Author, Issue Date, Status, Address, Building Name, Organization, or custom parameters).",
+                inputSchema: z.object({
+                    project_name: z.string().optional().describe("Project Name (Nombre del proyecto)"),
+                    project_number: z.string().optional().describe("Project Number (Número del proyecto)"),
+                    client_name: z.string().optional().describe("Client / Mandante (Nombre del cliente o mandante)"),
+                    author: z.string().optional().describe("Author / Architect (Arquitecto o autor del proyecto)"),
+                    issue_date: z.string().optional().describe("Issue Date (Fecha de emisión del proyecto)"),
+                    status: z.string().optional().describe("Project Status (Estado del proyecto)"),
+                    address: z.string().optional().describe("Project Address (Dirección del proyecto)"),
+                    building_name: z.string().optional().describe("Building Name (Nombre del edificio)"),
+                    organization_name: z.string().optional().describe("Organization Name (Nombre de la empresa u organización)"),
+                    organization_description: z.string().optional().describe("Organization Description (Descripción de la organización)"),
+                    custom_parameters: z.record(z.union([z.string(), z.number()])).optional().describe("Key-value dictionary to update custom/shared project parameters by name"),
+                }),
+            },
+            {
+                name: "threedelab_get_info",
+                description:
+                    "Get comprehensive information about the 3DELAB Tools plugin (D:\\REVIT_3DELAB_TOOLS), including available ribbon panels (Exportar, Material, Tiempo, Utilidades), commands, assembly path, and status.",
+                inputSchema: z.object({}),
+            },
+            {
+                name: "threedelab_get_timer_info",
+                description:
+                    "Get work session time metrics, project accumulated time, hourly rate, currency, and total accumulated cost tracked by 3DELAB Tools for the current project.",
+                inputSchema: z.object({}),
+            },
+            {
+                name: "threedelab_batch_wall_join",
+                description:
+                    "Execute 3DELAB Tools' batch wall geometry joining algorithm using spatial grid hashing. Can join all wall instances or specific wall types.",
+                inputSchema: z.object({
+                    wall_type_names: z.array(z.string()).optional().describe("Optional list of Wall Type names to join. If omitted, joins all wall types in the project."),
+                }),
+            },
+            {
+                name: "threedelab_export_views",
+                description:
+                    "Export model views as high-resolution images using 3DELAB Tools image export service. Supports active view, selected views, format selection, and custom output folders.",
+                inputSchema: z.object({
+                    view_names: z.array(z.string()).optional().describe("Optional list of specific view names to export. If omitted, exports the active view (or exportable views)."),
+                    output_folder: z.string().optional().describe("Destination folder for exported images. Defaults to the project's ExportedViews directory."),
+                    format: z.enum(["PNG", "JPEG", "TIFF", "BMP"]).optional().describe("Image format (default: PNG)"),
+                    pixel_size: z.number().optional().describe("Image width in pixels (default: 1920)"),
+                    resolution: z.number().optional().describe("Resolution in DPI (default: 300)"),
+                }),
+            },
+            {
+                name: "threedelab_check_inplace_family",
+                description:
+                    "Check if an element is an in-place (in-situ) family instance, and discover its category and suggested family template (.rft) according to 3DELAB Tools conversion logic.",
+                inputSchema: z.object({
+                    element_id: z.union([z.string(), z.number()]).describe("Element ID of the element to inspect"),
+                }),
+            },
+            {
+                name: "threedelab_remove_paint",
+                description:
+                    "Remove paint from all painted faces of a specific element using 3DELAB Tools material service.",
+                inputSchema: z.object({
+                    element_id: z.union([z.string(), z.number()]).describe("Element ID whose painted faces should be cleared"),
+                }),
+            },
         ],
+    };
+    return {
+        tools: rawResponse.tools.map((t: any) => ({
+            ...t,
+            inputSchema: zodToJsonSchema(t.inputSchema)
+        }))
     };
 });
 

@@ -14,7 +14,21 @@ It consists of two main components:
 ### Features
 *   **Analysis**: Query Levels, Grids, Walls, and other elements.
 *   **Modeling**: Create Walls, Doors, Windows, Floors, Roofs, and more.
-*   **Metadata**: Retrieve project location, base points, and specific element parameters.
+*   **Metadata & Project Info**: Retrieve and update Project Information (Project Name, Number, Client, Author/Architect, Issue Date, Status, Address, Organization, Custom Parameters), location, and base points.
+*   **3DELAB Tools Integration**: Direct interface to `3DELAB Tools` (`D:\REVIT_3DELAB_TOOLS`):
+    *   Inspect plugin capabilities and commands (`threedelab_get_info`).
+    *   Query session and project timer, rates, and costs (`threedelab_get_timer_info`).
+    *   Automated spatial batch wall joining (`threedelab_batch_wall_join`).
+    *   High-resolution view image export (`threedelab_export_views`).
+    *   In-place family detection & template mapping (`threedelab_check_inplace_family`).
+    *   Face paint removal (`threedelab_remove_paint`).
+*   **Dynamo Integration**: Complete Dynamo workflow automation:
+    *   Discover and list `.dyn` scripts (`dynamo_list_scripts`).
+    *   Inspect inputs, outputs, Python nodes, and dependencies (`dynamo_get_script_info`).
+    *   Modify input values without opening GUI (`dynamo_modify_inputs`).
+    *   Execute Dynamo scripts headlessly on active model (`dynamo_run_script`).
+    *   Generate `.dyn` graphs from scratch with clean visual layout and CPython3 code (`dynamo_generate_graph`).
+    *   Execute Python scripts dynamically in Revit context (`dynamo_run_python`).
 *   **Bi-directional Communication**: Real-time feedback from Revit to the AI.
 
 ### Installation
@@ -56,7 +70,21 @@ Consta de dos componentes principales:
 ### Características
 *   **Análisis**: Consultar Niveles, Rejillas, Muros y otros elementos.
 *   **Modelado**: Crear Muros, Puertas, Ventanas, Suelos, Techos y más.
-*   **Metadatos**: Obtener ubicación del proyecto, puntos base y parámetros de elementos.
+*   **Metadatos e Información de Proyecto**: Consultar y actualizar información de proyecto (Nombre, Número, Mandante/Cliente, Arquitecto/Autor, Fecha de emisión, Estado, Dirección, Organización y parámetros personalizados).
+*   **Integración con 3DELAB Tools**: Interfaz directa con `3DELAB Tools` (`D:\REVIT_3DELAB_TOOLS`):
+    *   Consultar capacidades y comandos del plugin (`threedelab_get_info`).
+    *   Consultar tiempos de sesión, acumulado por proyecto, tarifa por hora y costos (`threedelab_get_timer_info`).
+    *   Unión automática de muros en batch por hashing espacial (`threedelab_batch_wall_join`).
+    *   Exportación directa de vistas a imágenes en alta resolución (`threedelab_export_views`).
+    *   Inspección y plantilla de conversión de familias in-situ (`threedelab_check_inplace_family`).
+    *   Remoción de pintura de caras (`threedelab_remove_paint`).
+*   **Integración con Dynamo**: Automatización completa de flujos de Dynamo:
+    *   Búsqueda y listado de scripts `.dyn` (`dynamo_list_scripts`).
+    *   Inspección de entradas (`inputs`), salidas (`outputs`), nodos Python y dependencias (`dynamo_get_script_info`).
+    *   Modificación de valores de entrada sin abrir Dynamo (`dynamo_modify_inputs`).
+    *   Ejecución automatizada de grafos `.dyn` en el modelo activo (`dynamo_run_script`).
+    *   Generación de grafos `.dyn` por IA con layout visual y código CPython3 (`dynamo_generate_graph`).
+    *   Ejecución dinámica de scripts Python con la API de Revit (`dynamo_run_python`).
 *   **Comunicación Bidireccional**: Feedback en tiempo real desde Revit a la IA.
 
 ### Instalación

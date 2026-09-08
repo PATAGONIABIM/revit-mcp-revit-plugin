@@ -40,6 +40,16 @@ namespace RevitMCP.Plugin
                             Logger.Log("Creating Stairs (Self-Contained Transaction)...");
                             result = CirculationHandler.CreateStairs(doc, request.Args);
                         }
+                        else if (request.Command == "threedelab_batch_wall_join")
+                        {
+                            Logger.Log("Running 3DELAB Batch Wall Join (Self-Contained Transaction)...");
+                            result = ThreeDelabHandler.BatchWallJoin(doc, request.Args);
+                        }
+                        else if (request.Command == "threedelab_export_views")
+                        {
+                            Logger.Log("Running 3DELAB Export Views (No Transaction)...");
+                            result = ThreeDelabHandler.ExportViews(doc, request.Args);
+                        }
                         else
                         {
                             Logger.Log("Starting transaction...");
@@ -218,6 +228,46 @@ namespace RevitMCP.Plugin
                                             break;
                                         case "create_column_grid":
                                             result = DynamoHandler.CreateColumnGrid(doc, request.Args);
+                                            break;
+                                        case "dynamo_list_scripts":
+                                            result = DynamoHandler.ListScripts(request.Args);
+                                            break;
+                                        case "dynamo_get_script_info":
+                                            result = DynamoHandler.GetScriptInfo(request.Args);
+                                            break;
+                                        case "dynamo_modify_inputs":
+                                            result = DynamoHandler.ModifyInputs(request.Args);
+                                            break;
+                                        case "dynamo_generate_graph":
+                                            result = DynamoHandler.GenerateGraph(request.Args);
+                                            break;
+                                        case "dynamo_run_script":
+                                            result = DynamoHandler.RunScript(doc, request.Args);
+                                            break;
+                                        case "dynamo_run_python":
+                                            result = DynamoHandler.RunPython(doc, request.Args);
+                                            break;
+
+                                        // Project Information
+                                        case "get_project_info":
+                                            result = ProjectInfoHandler.GetProjectInfo(doc);
+                                            break;
+                                        case "set_project_info":
+                                            result = ProjectInfoHandler.SetProjectInfo(doc, request.Args);
+                                            break;
+
+                                        // 3DELAB Tools Integration
+                                        case "threedelab_get_info":
+                                            result = ThreeDelabHandler.GetPluginInfo(doc);
+                                            break;
+                                        case "threedelab_get_timer_info":
+                                            result = ThreeDelabHandler.GetTimerInfo(doc);
+                                            break;
+                                        case "threedelab_check_inplace_family":
+                                            result = ThreeDelabHandler.CheckInPlaceFamily(doc, request.Args);
+                                            break;
+                                        case "threedelab_remove_paint":
+                                            result = ThreeDelabHandler.RemovePaint(doc, request.Args);
                                             break;
 
                                         default:
